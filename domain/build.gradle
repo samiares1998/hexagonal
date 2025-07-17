@@ -1,0 +1,27 @@
+//build.gradle -> domain
+plugins {
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.assertj:assertj-core:3.25.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testImplementation 'org.mockito:mockito-core:5.12.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.12.0'
+
+    implementation project(':shared')
+}
+
+jar {
+    enabled = true  // ← Esto es CORRECTO para módulos de biblioteca
+    archiveClassifier = '' // Asegura que no tenga clasificador
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}

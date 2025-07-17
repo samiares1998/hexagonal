@@ -1,0 +1,35 @@
+rate:
+  limit:
+    capacity: 12
+    period: 60
+
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/bo_transaction_orchestrator
+    username: postgres
+    password: abcd1234
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  cloud:
+    inetutils:
+      preferred-networks: 127.0.0.1
+      ignored-interfaces: eth0
+  flyway:
+    enabled: true # Flyway está habilitado para manejar las migraciones
+    baselineOnMigrate: true # Establece el estado inicial en la base de datos
+    schemas: public
+    locations: classpath:db.migration
+
+backoffice:
+  thirdparty:
+    banking-priv:
+      baseUrl: http://uat-c-core.tenpodigital-uat.site
+      getTransaction: ${backoffice.thirdparty.banking-priv.baseUrl}/banking/gateway/transaction/search
+      getReissueCard: ${backoffice.thirdparty.banking-priv.baseUrl}/banking/gateway/holder/%s/account/%s/card/%s/reissue
+      getHoldTransaction: ${backoffice.thirdparty.banking-priv.baseUrl}/banking/gateway/transaction/account/%s/holds
+      transactionHoldApiKeyName: banking-gateway-authorization-apikey
+      transactionHoldApiKey: 7c3f5e55-1bcb-490c-a9fd-5b769f43e607

@@ -1,0 +1,32 @@
+plugins {
+    id 'org.springframework.boot' version '3.2.0' apply true // Asegúrate que apply=true
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'java'
+}
+
+// Configuración crítica que no puede faltar
+springBoot {
+    mainClass = 'cl.tenpo.Application'
+}
+
+bootJar {
+    archiveFileName = 'app.jar'
+}
+
+jar {
+    enabled = false
+}
+
+dependencies {
+    // Dependencias OBLIGATORIAS para el JAR ejecutable
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+
+    implementation project(':interface')
+    implementation project(':infrastructure')
+    implementation project(':domain')
+    implementation project(':shared')
+
+
+}

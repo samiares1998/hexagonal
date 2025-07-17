@@ -1,0 +1,50 @@
+//build.gradle -> Infrastructure
+plugins {
+    id 'java-library' // En lugar de 'java' para módulos no principales
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+repositories {
+    mavenCentral()
+}
+jar {
+    enabled = true  // ← Esto es CORRECTO para módulos de biblioteca
+    archiveClassifier = '' // Asegura que no tenga clasificador
+}
+dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.2.0'
+    implementation group: 'com.bucket4j', name: 'bucket4j-core', version: '8.10.1'
+    implementation 'cl.tenpo:observability-lib:1.0.2'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.4'
+    implementation 'org.springframework.boot:spring-boot-starter:3.2.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.2.0'
+    implementation 'org.springframework.boot:spring-boot-starter-cache:3.4.5'
+
+    runtimeOnly 'org.postgresql:postgresql:42.7.4'
+    implementation 'jakarta.transaction:jakarta.transaction-api:2.0.0'
+    implementation 'org.springframework:spring-jdbc:5.3.32'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.5.3'
+
+    implementation 'org.flywaydb:flyway-core:8.5.13'
+
+
+    implementation project(':domain')
+    implementation project(':shared')
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+test {
+    useJUnitPlatform()
+}
+

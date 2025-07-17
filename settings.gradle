@@ -1,0 +1,17 @@
+rootProject.name = 'bo-transaction-orchestrator'
+include 'interface', 'infrastructure', 'domain', 'shared', 'application', 'coverage'
+
+
+gradle.allprojects {
+    buildDir = file("${rootProject.projectDir}/build/${project.name}")
+}
+
+
+
+project(':interface').projectDir = file('interface')
+project(':infrastructure').projectDir = file('infrastructure')
+project(':domain').projectDir = file('domain')
+project(':shared').projectDir = file('shared')
+project(':application').projectDir = file('application')
+project(':coverage').projectDir = file('coverage')
+

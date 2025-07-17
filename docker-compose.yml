@@ -1,0 +1,18 @@
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: bo_transaction_orchestrator
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: abcd1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

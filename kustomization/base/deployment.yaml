@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${CI_PROJECT_NAME}
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: ${CI_PROJECT_NAME}
+  template:
+    metadata:
+      labels:
+        app: ${CI_PROJECT_NAME}
+    spec:
+      containers:
+        - name: ${CI_PROJECT_NAME}
+          image: foo/bar
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: ${CI_PROJECT_NAME}-configmap
+          env:
+            - name: CI_JOB_ID
+              value: "${CI_JOB_ID}"
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: databasecredentials
+                  key: db_pwd_bo_transaction_orchestrator
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: databasecredentials
+                  key: db_nme_bo_transaction_orchestrator
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: databasecredentials
+                  key: db_usr_bo_transaction_orchestrator
+            - name: DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: database-username-host
+                  key: database-dns-capa-b-flexible
+            - name: KAFKA_API_CLIENT
+              valueFrom:
+                secretKeyRef:
+                  key: kafka-api-client
+                  name: kafka-credentials
+            - name: KAFKA_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: kafka-api-secret
+                  name: kafka-credentials
+            - name: KAFKA_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: kafka-dns
+                  name: kafka-credentials
+            - name: KAFKA_SECURITY_PROTOCOL
+              valueFrom:
+                secretKeyRef:
+                  key: kafka-security-protocol
+                  name: kafka-credentials
+            - name: REDIS_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: "db_pwd_redis"
+                  name: "databasecredentials"
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "product=${OTEL_RESOURCE_ATTRIBUTES_PRODUCT}, team=${OTEL_RESOURCE_ATTRIBUTES_TEAM}, service.instance.id=$(MY_POD_NAME), service.namespace=tenpo-bo-transaction-orchestrator"
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 10
+            periodSeconds: 30
+            failureThreshold: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            timeoutSeconds: 3
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            timeoutSeconds: 3
+            periodSeconds: 10
+            failureThreshold: 3
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: ${CI_PROJECT_NAME}

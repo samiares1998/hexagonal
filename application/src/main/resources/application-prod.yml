@@ -1,0 +1,16 @@
+spring:
+  flyway:
+    enabled: true # Flyway está habilitado para manejar las migraciones
+    baselineOnMigrate: true # Establece el estado inicial en la base de datos
+    schemas: public
+    locations: classpath:db.migration
+
+backoffice:
+  thirdparty:
+    banking-priv:
+      baseUrl: http://stage-c-core-bancario-private.tenpodigital-stage.site
+      getTransaction: ${backoffice.thirdparty.banking-priv.baseUrl}/banking/gateway/transaction/search
+      getReissueCard: ${backoffice.thirdparty.banking-priv.baseUrl}/banking/gateway/holder/%s/account/%s/card/%s/reissue
+      getHoldTransaction: ${backoffice.thirdparty.banking-priv.baseUrl}/banking/gateway/transaction/account/%s/holds
+      transactionHoldApiKeyName: ${APIKEYNAME}
+      transactionHoldApiKey: ${APIKEY}

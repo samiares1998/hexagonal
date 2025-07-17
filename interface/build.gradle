@@ -1,0 +1,41 @@
+plugins {
+    id 'java-library' // En lugar de 'java' para módulos no principales
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+
+repositories {
+    mavenCentral()
+}
+jar {
+    enabled = true  // ← Esto es CORRECTO para módulos de biblioteca
+    archiveClassifier = '' // Asegura que no tenga clasificador
+}
+dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.2.0'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:3.2.2'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.2.4'
+    testImplementation 'org.assertj:assertj-core:3.25.3'
+    testImplementation 'javax.servlet:javax.servlet-api:4.0.1'
+    testImplementation 'org.mockito:mockito-inline:5.2.0' // para evitar warning de byte-buddy
+
+    implementation project(':domain')
+    implementation project(':shared')
+
+
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ["-parameters"]
+}
+
+test {
+    useJUnitPlatform()
+}

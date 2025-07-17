@@ -1,0 +1,28 @@
+//build.gradle -> shared
+plugins {
+    id 'java-library' // En lugar de 'java' para módulos no principales
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+repositories {
+    mavenCentral()
+}
+jar {
+    enabled = true  // ← Esto es CORRECTO para módulos de biblioteca
+    archiveClassifier = '' // Asegura que no tenga clasificador
+}
+dependencies {
+    implementation 'org.springframework.data:spring-data-commons:3.2.3'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
+jar {
+    enabled = true  // ← Esto es CORRECTO para módulos de biblioteca
+    archiveClassifier = '' // Asegura que no tenga clasificador
+}

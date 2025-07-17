@@ -1,0 +1,83 @@
+//build.gradle raiz
+plugins {
+    id 'org.springframework.boot' version '3.2.0' apply false
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'java'
+    id 'jacoco'
+}
+
+group = 'cl.tenpo'
+version = '0.0.1-SNAPSHOT'
+//Config General
+allprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+    apply plugin: 'io.spring.dependency-management'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://repo.spring.io/milestone"
+        }
+        maven {
+            credentials {
+                username = System.getenv("NEXUS_USER") ?: project.findProperty("nexusUserName")
+                password = System.getenv("NEXUS_PASS") ?: project.findProperty("nexusPassword")
+            }
+            url 'https://nexus-tools.tenpodigital.cloud/repository/maven-releases/'
+        }
+    }
+    jacoco {
+        toolVersion = "0.8.10"
+    }
+
+}
+// Configuración de variables de versión
+ext {
+    springCloudVersion = "2021.0.0"
+    junitJupiterVersion = "5.7.2"
+    mockito = "5.17.0"
+    hamcrest = "1.3"
+    hamcrestOptional = "2.0.0"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "org.springframework.boot:spring-boot-dependencies:3.2.0"
+    }
+}
+
+// Configuraciones solo para subproyectos (no para el root)
+subprojects {
+    dependencies {
+        compileOnly 'org.projectlombok:lombok:1.18.36'
+        annotationProcessor 'org.projectlombok:lombok:1.18.36'
+        implementation 'org.slf4j:slf4j-api:2.0.9'
+
+        testImplementation "org.junit.jupiter:junit-jupiter:${junitJupiterVersion}"
+        testImplementation "org.mockito:mockito-core:${mockito}"
+        implementation "org.mockito:mockito-junit-jupiter:${mockito}"
+    }
+    if (project.name == 'application') {
+        apply plugin: 'org.springframework.boot'
+    }
+    test {
+        useJUnitPlatform()
+        finalizedBy jacocoTestReport
+
+        jacoco {
+            enabled = true
+            //destinationFile = file("$buildDir/jacoco/test.exec")
+        }
+    }
+
+}
+

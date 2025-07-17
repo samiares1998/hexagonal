@@ -1,0 +1,55 @@
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+  api-docs:
+    path: /v3/api-docs
+
+rate:
+  limit:
+    capacity: 100
+    period: 60
+
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-timeout: 30000
+      idle-timeout: 60000
+      max-lifetime: 1740000
+      keepalive-time: 900000
+      auto-commit: true
+    password: ${DB_PASS}
+    url: jdbc:postgresql://${DATABASE_HOST}:5432/${DB_NAME}?connectTimeout=30&socketTimeout=30
+    username: ${DB_USER}
+
+    jpa:
+      open-in-view: false
+      hibernate:
+        ddl-auto: none # Hibernate no realiza ningún cambio en el esquema de la base de datos, de esto se encarga Flyway
+      properties:
+        hibernate:
+          default_schema: public
+          jdbc:
+            lob:
+              non_contextual_creation: true
+    flyway:
+      enabled: true # Flyway está habilitado para manejar las migraciones
+      baselineOnMigrate: true # Establece el estado inicial en la base de datos
+      schemas: public
+      locations: classpath:db.migration
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    date-format: "yyyy-MM-dd'T'HH:mm:ss.SSS"
+    deserialization:
+      adjust-dates-to-context-time-zone: false
+logging:
+  level:
+    root: INFO
+    cl.tenpo: INFO

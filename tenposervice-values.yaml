@@ -1,0 +1,25 @@
+kong: private
+selector:
+  app: bo-transaction-orchestrator
+networking:
+  host: '${TENPO_SERVICE_PRIVATE_HOST}'
+  port: 8080
+  protocol: TCP
+  endpoints:
+    - name: bo-transaction-orchestrator
+      path: /v1/bo-transaction-orchestrator
+      stripPath: true
+      profile: private
+      authorization: bo-transaction-api-key
+      methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+  authorizations:
+    - name: bo-transaction-api-key
+      mode: apikey
+teamInfo:
+  name: FluxOperation
+  slackChannel: "#bo-dev"
+

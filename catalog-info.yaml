@@ -1,0 +1,19 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: bo-transaction-orchestrator
+  description: proyecto encargado de las transacciones y grupos de canales transaccionales
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+  links:
+    - url: https://onenr.io/xxx #replace with link
+      title: NewRelic APM
+      icon: dashboard
+    - url: https://tenpo-prod.kb.eastus2.azure.elastic-cloud.com:9243/app/r/s/xxx #replace with link
+      title: Logs
+      icon: TextSnippet
+spec:
+  type: service
+  lifecycle: production
+  owner:  Flux operation
+  system: bo

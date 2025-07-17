@@ -1,0 +1,61 @@
+//build.gradle coverage
+plugins {
+
+    id 'jacoco-report-aggregation'
+}
+
+group = 'cl.tenpo'
+version = '0.0.1-SNAPSHOT'
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    jacocoAggregation project(':application')
+    jacocoAggregation project(':domain')
+    jacocoAggregation project(':interface')
+    jacocoAggregation project(':shared')
+}
+
+tasks.named('check') {
+    dependsOn tasks.named('testCodeCoverageReport', JacocoReport)
+}
+
+tasks.named('testCodeCoverageReport', JacocoReport) {
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+
+        // 👇 Esto hace que los reportes se guarden en: rootProject/build/reports/*
+        //el nombre y subruta del xml lo determino devops
+        html.outputLocation.set(layout.projectDirectory.dir("${rootProject.buildDir}/reports/html"))
+        xml.outputLocation.set(layout.projectDirectory.file("${rootProject.buildDir}/reports/jacoco/test/jacocoTestReport.xml"))
+
+    }
+
+    //Paquetes a excluir
+    def exclusions = [
+            //Exclusiones bases
+            '**/*Application.class',
+            '**/config/**',
+            '**/exception/**',
+            '**/dto/**',
+            '**/entities/**',
+            '**/mapper/**',
+            '**/enums/**',
+            '**/constants/**',
+            //Exclusiones pruebas funcionales
+            '**/usecases/**',
+            '**/rest/**'
+    ]
+
+    // Reasignar classDirectories con exclusiones usando fileTree
+    classDirectories.setFrom(
+            files(classDirectories.files.collect { dir ->
+                fileTree(dir) {
+                    exclude exclusions
+                }
+            })
+    )
+
+}
